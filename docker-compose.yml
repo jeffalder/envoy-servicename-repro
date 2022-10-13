@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  backend:
+    image: kennethreitz/httpbin
+  mitmproxy:
+    image: mitmproxy/mitmproxy
+    command: mitmdump --mode reverse:http://backend  --flow-detail 4
+  envoy:
+    image: envoyproxy/envoy:v1.22-latest
+    volumes:
+      - "./envoy.yaml:/etc/envoy/envoy.yaml"
+    ports:
+      # admin port
+      - "7571:9901"
+      # normal
+      - "7572:10001"
